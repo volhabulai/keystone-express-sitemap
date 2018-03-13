@@ -107,7 +107,14 @@ var KeystoneSitemap = function(keystone, req, res) {
 		// Loop through route paths to find keystone list name reference
 		// Reference will either be fixed in route, followed by dynamic parameter (/listname/:id), or will be set as the dynamic parameter for a custom route (/custom/:listname)
 		for (var p in paths) {
-			list = findKeystoneList(paths[p]);
+			if (paths[p]==='careers')
+				list = findKeystoneList('vacancy');
+			else if (paths[p]==='blog')
+				list = findKeystoneList('news');
+			else if (paths[p]==='case-studies')
+				list = findKeystoneList('caseStudy');
+			else
+				list = findKeystoneList(paths[p]);
 			if (list != null) {
 				//route is custom if the list name is the dynamic parameter in the URL
 				hasCustomRoute = paths[p] === dynamicParam;
@@ -116,23 +123,13 @@ var KeystoneSitemap = function(keystone, req, res) {
 		}
 
 		if (list != null) {
+
 			//check what property of the list object is being used as the URL identifier, based on keystone model settings
 			var idParam = list.options.autokey && list.options.autokey.path ? list.options.autokey.path : '_id';
 
 			var filterObject = {};
+
 			
-			if(['Courses','Vacancies','News'].indexOf(list.key) !== -1) {
-				filterObject = {
-					state: 'published'
-				};
-			}
-
-			if(['Solution','Industries'].indexOf(list.key) !== -1) {
-				filterObject = {
-					state: 'active'
-				};
-			}
-
 			list.model.find(filterObject).exec(function(err, results) {
 				if (results && results.length > 0) {
 					results.forEach(function(v,i) {
