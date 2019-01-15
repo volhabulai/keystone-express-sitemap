@@ -179,7 +179,7 @@ var KeystoneSitemap = function(keystone, req, res) {
 		sitemap({
 		    map: map,
 		    route: route,
-		    url: host,
+		    url: "www." + host,
 		    http: 'https'
 		}).XMLtoWeb(res);
 	};
